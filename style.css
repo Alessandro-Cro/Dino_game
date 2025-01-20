@@ -1,0 +1,117 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+}
+
+#startScreen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#startScreen h1 {
+    font-size: 3rem;
+    color: green;
+}
+
+#startButton {
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#startButton:hover {
+    background-color: darkgreen;
+}
+
+#gameArea {
+    width: 90%; /* Più largo */
+    height: 300px;
+    border: 2px solid black;
+    overflow: hidden;
+    position: relative;
+    margin: 0 auto;
+    background-color: lightblue;
+    display: none;
+}
+
+
+#scoreArea {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 1.5rem;
+    color: red;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+
+#background {
+    position: absolute;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(to right, #a3e4d7 0%, #ffebcd 100%);
+    background-size: 200% auto;
+    animation: moveBackground 5s linear infinite;
+}
+
+@keyframes moveBackground {
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: -100% 0;
+    }
+}
+
+.dino {
+    position: absolute;
+    bottom: 0;
+    left: 50px;
+    width: 50px;
+    height: 50px;
+    background-color: green;
+}
+
+.cactus {
+    position: absolute;
+    bottom: 0;
+    width: 30px;
+    height: 50px;
+    background-color: brown;
+}
+
+.big-cactus {
+    position: absolute;
+    bottom: 0;
+    width: 50px;
+    height: 80px;
+    background-color: darkred;
+}
+
+#jumpButton {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    padding: 20px 40px; /* Ingrandito */
+    background-color: blue;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    display: none;
+}
