@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dino</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="startScreen">
+        <h1>Dino</h1>
+        <button id="startButton">Start</button>
+    </div>
+
+    <div id="gameArea">
+      <div id="gameOverScreen" style="display: none;">
+          <p id="gameOverText"></p>
+          <img id="gameOverImage" src="images/circle.png" style="display: none;" alt="Game Over">
+          <button id="restartGame" style="display: none;">Restart</button>
+      </div>
+        <div id="scoreArea">
+            <span id="livesContainer">❤️❤️❤️</span>
+            <span id="score">Punti: 0</span>
+        </div>
+        <div id="dino" class="dino"></div>
+        <div id="ground"></div>
+        <button id="jumpButton">Jump</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

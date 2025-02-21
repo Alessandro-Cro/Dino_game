@@ -1,0 +1,209 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+}
+
+#startScreen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#startScreen h1 {
+    font-size: 3rem;
+    color: green;
+}
+
+#startButton {
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#startButton:hover {
+    background-color: darkgreen;
+}
+
+
+
+
+#gameOverScreen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 3;
+    background: rgba(0, 0, 0, 0.8); /* Sfondo scuro trasparente */
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+#gameOverImage {
+    width: 200px;
+    margin: 20px 0;
+}
+
+#restartGame {
+    background-color: #8B4513;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+#restartGame:hover {
+    background-color: #5A3312;
+}
+
+
+
+
+
+
+#gameArea {
+    width: 90%; /* Più largo */
+    height: 300px;
+    border: 2px solid black;
+    overflow: hidden;
+    position: relative;
+    margin: 0 auto;
+    background-color: lightblue;
+    display: none;
+}
+
+
+#scoreArea {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 1.5rem;
+    color: red;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+
+#background {
+    position: absolute;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(to right, #a3e4d7 0%, #ffebcd 100%);
+    background-size: 200% auto;
+    animation: moveBackground 5s linear infinite;
+}
+
+@keyframes moveBackground {
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: -100% 0;
+    }
+}
+
+#dino {
+    position: absolute;
+    bottom: 20px;
+    left: 10%;
+    width: 72px; /* Ogni frame è largo 24px */
+    height: 72px; /* Altezza dello sprite */
+    background-image: url('images/dino-sprite.png'); /* Sprite sheet del dinosauro */
+    background-size: 1728px 72px; /* Dimensione completa dello sprite */
+    background-position: 0 0; /* Iniziamo dal primo frame */
+    z-index: 2;
+}
+
+#ground {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%; /* Occupa tutta la larghezza dello spazio di gioco */
+    height: 20px; /* Altezza della terra */
+    background: #8B4513; /* Colore marrone per la terra */
+    border-top: 2px solid #5A3312; /* Bordo più scuro per dare contrasto */
+    z-index: 1; /* Posizioniamolo sotto dinosauro e cactus */
+}
+
+
+.cactus {
+    position: absolute;
+    bottom: 0px;
+    z-index: 2;
+    background-image: url('images/cactus-sprite.png'); /* Sprite sheet dei cactus */
+    background-size: 576px 128px; /* Dimensione completa dello sprite */
+}
+
+.cactus.small {
+    width: 64px;
+    height: 64px;
+    background-position: -192px 0; /* 4° frame */
+}
+
+.cactus.large {
+    width: 64px;
+    height: 64px;
+    background-position: 0 0; /* 1° frame */
+}
+
+.cactus.wide {
+    width: 64px;
+    height: 64px;
+    background-position: -320px 0; /* 6° frame */
+}
+
+.cactus.ultrafast {
+    width: 64px;
+    height: 64px;
+    background-position: -256px 0; /* 5° frame */
+}
+
+
+#jumpButton {
+    position: absolute;
+    z-index: 3;
+    bottom: 10px;
+    right: 10px;
+    padding: 20px 40px; /* Ingrandito */
+    background-color: blue;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    display: none;
+}
+
+.message-box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 20px 40px;
+    border-radius: 10px;
+    font-size: 24px; /* Testo più grande */
+    text-align: center;
+    z-index: 5; /* Sopra tutto */
+    display: none; /* Nascondiamo inizialmente */
+}
+
+.message-box img {
+    margin-top: 20px;
+    max-width: 100px;
+}
