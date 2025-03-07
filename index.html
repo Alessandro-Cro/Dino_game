@@ -9,9 +9,10 @@
 <body>
     <div id="startScreen">
         <h1>Dino</h1>
-        <p id="orientationMessage">IMPORTANTE! Se giochi da telefono, mettilo in orizzontale per giocare!</p>
+        <p id="orientationMessage">IMPORTANTE! Se giochi da telefono, mettilo in orizzontale per giocare! Inoltre ti consiglio di mettere la modalità a schermo intero tramite il pulsante blu!</p>
         <input type="text" id="playerName" placeholder="Inserisci il tuo nome">
         <button id="startButton">Start</button>
+        <button id="fullscreenButton">Schermo intero</button>
     </div>
 
     <div id="gameArea">
@@ -28,6 +29,12 @@
         <div id="ground"></div>
         <button id="jumpButton">Jump</button>
     </div>
+
+    <div id="lifeLostMessage" class="popup">
+      <p>Hai perso una vita! Vite rimaste: <span id="remainingLives"></span></p>
+      <button id="closePopup">OK</button>
+    </div>
+
 
     <script src="script.js"></script>
 </body>
