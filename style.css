@@ -70,7 +70,19 @@ body {
 }
 
 
+#orientationMessage {
+    font-size: 16px;
+    color: red;
+    margin-bottom: 10px;
+}
 
+#playerName {
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    text-align: center;
+}
 
 
 
