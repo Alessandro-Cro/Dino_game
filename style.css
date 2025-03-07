@@ -69,6 +69,21 @@ body {
     background-color: #5A3312;
 }
 
+#fullscreenButton {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+#fullscreenButton:hover {
+    background-color: #0056b3;
+}
+
 
 #orientationMessage {
     font-size: 16px;
@@ -119,6 +134,32 @@ body {
     background-size: 200% auto;
     animation: moveBackground 5s linear infinite;
 }
+
+
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    text-align: center;
+}
+
+.popup button {
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
 
 @keyframes moveBackground {
     from {
