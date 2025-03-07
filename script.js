@@ -1,343 +1,221 @@
-const startScreen = document.getElementById('startScreen');
-const startButton = document.getElementById('startButton');
-const gameArea = document.getElementById('gameArea');
-const dino = document.getElementById('dino');
-const jumpButton = document.getElementById('jumpButton');
-const livesContainer = document.getElementById('livesContainer');
-const scoreDisplay = document.getElementById('score');
-
-let isJumping = false;
-let isHoldingJump = false;
-let score = 0;
-let lives = 3;
-let gameInterval;
-let cactusInterval;
-let cactusCount = 0;
-let consecutiveJumps = 0; // Nuova variabile per tracciare i salti consecutivi
-let gameActive = false;
-
-// Funzione per iniziare il gioco
-function startGame() {
-    resetLives();
-    resetScore();
-    cactusCount = 0;
-    startScreen.style.display = 'none';
-    gameArea.style.display = 'block';
-    jumpButton.style.display = 'block';
-    gameActive = true;
-
-    setTimeout(() => {
-        generateCactus(); // Genera il primo cactus
-    }, 1000); // Ritardo iniziale
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
 }
 
-let dinoFrame = 4; // Inizia dal 4° frame (indice 3 perché parte da 0)
-
-// Funzione per animare il dinosauro
-function animateDino() {
-    if (isJumping) return; // Non animare la corsa durante il salto
-
-    dinoFrame = (dinoFrame + 1) % 7 + 3;
-    const xOffset = dinoFrame * 72; // Ogni frame è largo 72px
-    document.getElementById('dino').style.backgroundPosition = `-${xOffset}px 0`;
+#startScreen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
-// Animazione della corsa: esegui ogni 100ms
-setInterval(animateDino, 100);
+#startScreen h1 {
+    font-size: 3rem;
+    color: green;
+}
 
-// Funzione per gestire il salto
-function jump() {
-    if (isJumping) return; // Evita salti multipli
+#startButton {
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
 
-    isJumping = true;
-    const dino = document.getElementById('dino');
+#startButton:hover {
+    background-color: darkgreen;
+}
 
-    // Cambia frame al 19° (indice 18)
-    dino.style.backgroundPosition = `${-18 * 24}px 0`;
 
-    // Simula il salto
-    let jumpHeight = 0;
-    const jumpInterval = setInterval(() => {
-        if (jumpHeight < 100) {
-            jumpHeight += 5;
-            dino.style.bottom = `${10 + jumpHeight}px`;
-        } else {
-            clearInterval(jumpInterval);
-            descend();
-        }
-    }, 20);
 
-    // Funzione per la discesa
-    function descend() {
-        const descendInterval = setInterval(() => {
-            if (jumpHeight > 0) {
-                jumpHeight -= 5;
-                dino.style.bottom = `${10 + jumpHeight}px`;
-            } else {
-                clearInterval(descendInterval);
-                isJumping = false; // Ritorna alla corsa
-            }
-        }, 20);
+
+#gameOverScreen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 3;
+    background: rgba(0, 0, 0, 0.8); /* Sfondo scuro trasparente */
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+#gameOverImage {
+    width: 200px;
+    margin: 20px 0;
+}
+
+#restartGame {
+    background-color: #8B4513;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+#restartGame:hover {
+    background-color: #5A3312;
+}
+
+
+#orientationMessage {
+    font-size: 16px;
+    color: red;
+    margin-bottom: 10px;
+}
+
+#playerName {
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    text-align: center;
+}
+
+
+
+#gameArea {
+    width: 90%; /* Più largo */
+    height: 300px;
+    border: 2px solid black;
+    overflow: hidden;
+    position: relative;
+    margin: 0 auto;
+    background-color: lightblue;
+    display: none;
+}
+
+
+#scoreArea {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 1.5rem;
+    color: red;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+
+#background {
+    position: absolute;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(to right, #a3e4d7 0%, #ffebcd 100%);
+    background-size: 200% auto;
+    animation: moveBackground 5s linear infinite;
+}
+
+@keyframes moveBackground {
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: -100% 0;
     }
 }
 
-// Gestire la pressione continua del tasto Jump
-jumpButton.addEventListener('mousedown', () => {
-    isHoldingJump = true;
-});
-jumpButton.addEventListener('mouseup', () => {
-    isHoldingJump = false;
-});
-jumpButton.addEventListener('click', jump);
-
-// Funzione per generare cactus
-function generateCactus() {
-    if (!gameActive) return;
-
-    const cactus = document.createElement('div');
-    cactus.classList.add('cactus');
-    cactusCount++;
-
-    // Determina il tipo di cactus
-    let cactusType;
-    if (cactusCount > 5) {
-        const randomType = Math.random();
-        if (consecutiveJumps >= 10 && Math.random() < 0.1) {
-            cactusType = 'ultrafast'; // Cactus ultraveloce
-        } else if (randomType < 0.5) {
-            cactusType = 'small'; // Cactus piccolo
-        } else if (randomType < 0.8) {
-            cactusType = 'large'; // Cactus grande
-        } else {
-            cactusType = 'wide'; // Cactus largo
-        }
-    } else {
-        cactusType = 'small'; // Solo cactus piccoli prima del quinto
-    }
-
-    // Applica la classe al cactus
-    cactus.classList.add(cactusType);
-    cactus.style.left = '100%';
-    gameArea.appendChild(cactus);
-    moveCactus(cactus, cactusType);
-
-    // Genera il prossimo cactus dopo un intervallo casuale
-    const nextCactusTime = Math.random() * (2000 - 1000) + 800; // Da 1 a 2 secondi
-    setTimeout(generateCactus, nextCactusTime);
+#dino {
+    position: absolute;
+    bottom: 20px;
+    left: 10%;
+    width: 72px; /* Ogni frame è largo 24px */
+    height: 72px; /* Altezza dello sprite */
+    background-image: url('images/dino-sprite.png'); /* Sprite sheet del dinosauro */
+    background-size: 1728px 72px; /* Dimensione completa dello sprite */
+    background-position: 0 0; /* Iniziamo dal primo frame */
+    z-index: 2;
 }
 
-// Funzione per muovere il cactus
-function moveCactus(cactus, cactusType) {
-    let leftPosition = 100;
-
-    // Velocità del cactus in base al tipo
-    let speed;
-    if (cactusType === 'ultrafast') {
-        speed = 4; // Velocità più alta per i cactus ultraveloci
-    } else if (Math.random() < 0.3) {
-        speed = 3; // Velocità casuale: 30% dei cactus sono più veloci
-    } else {
-        speed = 2; // Velocità normale
-    }
-
-    const interval = setInterval(() => {
-        leftPosition -= speed; // Usa la velocità determinata
-        cactus.style.left = `${leftPosition}%`;
-
-        if (leftPosition <= 0) {
-            clearInterval(interval);
-            gameArea.removeChild(cactus);
-            incrementScore();
-        }
-
-        if (leftPosition <= 10 && leftPosition >= 0 && !isJumping) {
-            loseLife();
-            clearInterval(interval);
-            gameArea.removeChild(cactus);
-        }
-    }, 20);
+#ground {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%; /* Occupa tutta la larghezza dello spazio di gioco */
+    height: 20px; /* Altezza della terra */
+    background: #8B4513; /* Colore marrone per la terra */
+    border-top: 2px solid #5A3312; /* Bordo più scuro per dare contrasto */
+    z-index: 1; /* Posizioniamolo sotto dinosauro e cactus */
 }
 
 
-
-
-
-/*function showGameOverScreen() {
-    const gameOverText = document.getElementById('gameOverText');
-    const gameOverImage = document.getElementById('gameOverImage');
-    const restartButton = document.getElementById('restartGame');
-
-    // Mostra il contenitore del Game Over
-    document.getElementById('gameOverScreen').style.display = 'block';
-
-    // Reset scritta e immagine
-    gameOverText.textContent = "Beccati questo";
-    gameOverImage.style.display = 'none';
-    restartButton.style.display = 'none';
-
-    // Aggiungi i puntini di sospensione
-    let dots = "";
-    let dotInterval = setInterval(() => {
-        if (dots.length < 3) {
-            dots += ".";
-        } else {
-            clearInterval(dotInterval);
-
-            // Mostra l'immagine "circle"
-            setTimeout(() => {
-                gameOverImage.style.display = 'block';
-
-                // Mostra il pulsante "OK" dopo 1 secondo
-                setTimeout(() => {
-                    restartButton.style.display = 'block';
-                }, 1000);
-            }, 1000);
-        }
-        gameOverText.textContent = `Beccati questo${dots}`;
-    }, 500);
-}*/
-function showGameOverScreen() {
-    const gameOverText = document.getElementById('gameOverText');
-    const gameOverImage = document.getElementById('gameOverImage');
-    const restartButton = document.getElementById('restartGame');
-
-    // Mostra il contenitore del Game Over
-    document.getElementById('gameOverScreen').style.display = 'block';
-
-    // Mostra "Game Over" per 1.5 secondi
-    gameOverText.textContent = "Game Over";
-    gameOverImage.style.display = 'none';
-    restartButton.style.display = 'none';
-
-    setTimeout(() => {
-        // Cambia il testo in "Beccati questo"
-        gameOverText.textContent = "Beccati questo";
-        let dots = "";
-        let dotInterval = setInterval(() => {
-            if (dots.length < 3) {
-                dots += ".";
-            } else {
-                clearInterval(dotInterval);
-
-                // Mostra l'immagine "circle"
-                setTimeout(() => {
-                    gameOverImage.style.display = 'block';
-
-                    // Mostra il pulsante "Restart" dopo 1 secondo
-                    setTimeout(() => {
-                        restartButton.style.display = 'block';
-                    }, 1000);
-                }, 1000);
-            }
-            gameOverText.textContent = `Beccati questo${dots}`;
-        }, 500);
-    }, 1500); // Mostra "Game Over" per 1.5 secondi prima di "Beccati questo..."
+.cactus {
+    position: absolute;
+    bottom: 0px;
+    z-index: 2;
+    background-image: url('images/cactus-sprite.png'); /* Sprite sheet dei cactus */
+    background-size: 576px 128px; /* Dimensione completa dello sprite */
 }
 
-function resetGame() {
-    // Ripristina le variabili di gioco
-    lives = 3;
-    score = 0;
-    cactusCount = 0;
-    consecutiveJumps = 0;
-    gameActive = false;
+.cactus.small {
+    width: 64px;
+    height: 64px;
+    background-position: -192px 0; /* 4° frame */
+}
 
-    // Aggiorna il contatore delle vite e del punteggio
-    updateLives();
-    resetScore();
+.cactus.large {
+    width: 64px;
+    height: 64px;
+    background-position: 0 0; /* 1° frame */
+}
 
-    // Rimuovi tutti i cactus
-    const cacti = document.querySelectorAll('.cactus');
-    cacti.forEach(cactus => cactus.remove());
+.cactus.wide {
+    width: 64px;
+    height: 64px;
+    background-position: -320px 0; /* 6° frame */
+}
 
-    // Nascondi lo schermo di Game Over e mostra lo schermo di start
-    document.getElementById('gameOverScreen').style.display = 'none';
-    startScreen.style.display = 'flex';
-    gameArea.style.display = 'none';
-    jumpButton.style.display = 'none';
-
-    // Ripristina il dinosauro
-    const dino = document.getElementById('dino');
-    dino.style.bottom = '10px'; // Riporta il dinosauro alla posizione iniziale
-    dino.style.backgroundPosition = '-72px 0'; // Frame iniziale per la corsa
-
-    // Ripristina l'animazione del dinosauro
-    isJumping = false;
-    isHoldingJump = false;
+.cactus.ultrafast {
+    width: 64px;
+    height: 64px;
+    background-position: -256px 0; /* 5° frame */
 }
 
 
-
-
-// Funzione per incrementare il punteggio
-function incrementScore() {
-    score++;
-    scoreDisplay.textContent = `Punti: ${score}`;
-    consecutiveJumps++; // Incrementa i salti consecutivi
+#jumpButton {
+    position: absolute;
+    z-index: 3;
+    bottom: 10px;
+    right: 10px;
+    padding: 20px 40px; /* Ingrandito */
+    background-color: blue;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    display: none;
 }
 
-// Funzione per perdere una vita
-function loseLife() {
-    lives--;
-    consecutiveJumps = 0; // Resetta i salti consecutivi quando si perde una vita
-    updateLives();
-    gameActive = false; // Pausa temporanea
-
-    if (lives > 0) {
-        alert(`Hai perso una vita! Vite rimaste: ${lives}`);
-
-        setTimeout(() => {
-            gameActive = true; // Riprendi il gioco
-            generateCactus(); // Genera un nuovo cactus
-        }, 1500); // Ritardo di 1,5 secondi
-    } else {
-      if (lives === 0) {
-        clearInterval(gameInterval); // Ferma il gioco
-        showGameOverScreen(); // Mostra la sequenza di Game Over
-      }
-        //gameOver();
-    }
+.message-box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 20px 40px;
+    border-radius: 10px;
+    font-size: 24px; /* Testo più grande */
+    text-align: center;
+    z-index: 5; /* Sopra tutto */
+    display: none; /* Nascondiamo inizialmente */
 }
 
-// Funzione per aggiornare il contatore delle vite
-function updateLives() {
-    let hearts = '';
-    for (let i = 0; i < lives; i++) {
-        hearts += '❤️';
-    }
-    for (let i = lives; i < 3; i++) {
-        hearts += '🖤';
-    }
-    livesContainer.innerHTML = hearts;
+.message-box img {
+    margin-top: 20px;
+    max-width: 100px;
 }
-
-// Funzione per resettare le vite
-function resetLives() {
-    lives = 3;
-    updateLives();
-}
-
-// Funzione per resettare il punteggio
-function resetScore() {
-    score = 0;
-    scoreDisplay.textContent = `Punti: ${score}`;
-}
-
-// Funzione per gestire il Game Over
-function gameOver() {
-    alert("Game Over! Hai perso tutte le vite.");
-    gameActive = false;
-    gameArea.style.display = 'none';
-    jumpButton.style.display = 'none';
-    startScreen.style.display = 'flex';
-
-    // Rimuovi tutti i cactus
-    const cacti = document.querySelectorAll('.cactus');
-    cacti.forEach(cactus => cactus.remove());
-}
-
-// Event listener per il bottone "Start"
-startButton.addEventListener('click', startGame);
-document.getElementById('restartGame').addEventListener('click', () => {
-    resetGame(); // Reset del gioco
-});
