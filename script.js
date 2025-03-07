@@ -160,6 +160,19 @@ function moveCactus(cactus, cactusType) {
     }, 20);
 }
 
+function enterFullscreen() {
+    const elem = document.documentElement; // Rende l'intera pagina fullscreen
+    if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+    } else if (elem.mozRequestFullScreen) { // Per Firefox
+        elem.mozRequestFullScreen();
+    } else if (elem.webkitRequestFullscreen) { // Per Chrome, Safari e Opera
+        elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { // Per Edge
+        elem.msRequestFullscreen();
+    }
+}
+document.getElementById("fullscreenButton").addEventListener("click", enterFullscreen);
 
 
 
@@ -317,7 +330,7 @@ function incrementScore() {
 }
 
 // Funzione per perdere una vita
-function loseLife() {
+/*function loseLife() {
     lives--;
     consecutiveJumps = 0; // Resetta i salti consecutivi quando si perde una vita
     updateLives();
@@ -337,7 +350,32 @@ function loseLife() {
       }
         //gameOver();
     }
+} *///originale
+
+function loseLife() {
+    lives--;
+    consecutiveJumps = 0; // Resetta i salti consecutivi quando si perde una vita
+    updateLives();
+    gameActive = false; // Pausa temporanea
+
+    if (lives > 0) {
+        // Mostra il popup personalizzato invece di alert()
+        document.getElementById('remainingLives').textContent = lives;
+        document.getElementById('lifeLostMessage').style.display = 'block';
+    } else {
+        clearInterval(gameInterval); // Ferma il gioco
+        showGameOverScreen(); // Mostra la sequenza di Game Over
+    }
 }
+
+// Funzione per chiudere il popup e riprendere il gioco senza uscire dal fullscreen
+document.getElementById("closePopup").addEventListener("click", function () {
+    document.getElementById("lifeLostMessage").style.display = "none";
+    gameActive = true; // Riprende il gioco
+    enterFullscreen(); // Rientra in fullscreen se è uscito
+    setTimeout(generateCactus, 1500); // Aspetta 1.5s prima di generare un nuovo cactus
+});
+
 
 // Funzione per aggiornare il contatore delle vite
 function updateLives() {
