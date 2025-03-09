@@ -174,7 +174,37 @@ function enterFullscreen() {
 }
 document.getElementById("fullscreenButton").addEventListener("click", enterFullscreen);
 
+function saveScore() {
+    let playerName = document.getElementById("playerName").value.trim();
+    if (!playerName) return; // Se il nome è vuoto, non salvare
 
+    let scores = JSON.parse(localStorage.getItem("scores")) || []; // Recupera i punteggi salvati
+    scores.push({ name: playerName, score: score });
+
+    // Ordina i punteggi in ordine decrescente
+    scores.sort((a, b) => b.score - a.score);
+
+    // Salva i punteggi aggiornati
+    localStorage.setItem("scores", JSON.stringify(scores));
+
+    // Mostra la classifica aggiornata
+    displayLeaderboard();
+}
+
+function displayLeaderboard() {
+    let scores = JSON.parse(localStorage.getItem("scores")) || [];
+    let scoreList = document.getElementById("scoreList");
+
+    // Svuota la lista
+    scoreList.innerHTML = "";
+
+    // Mostra solo i migliori 5 punteggi
+    scores.slice(0, 5).forEach((entry, index) => {
+        let li = document.createElement("li");
+        li.textContent = `${index + 1}. ${entry.name}: ${entry.score} punti`;
+        scoreList.appendChild(li);
+    });
+}
 
 
 /*function showGameOverScreen() {
@@ -403,6 +433,11 @@ function resetScore() {
 
 // Funzione per gestire il Game Over
 function gameOver() {
+
+    saveScore(); // Salva il punteggio
+    displayLeaderboard(); // Aggiorna la classifica
+
+  
     alert("Game Over! Hai perso tutte le vite.");
     gameActive = false;
     gameArea.style.display = 'none';
