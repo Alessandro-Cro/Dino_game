@@ -99,6 +99,17 @@ body {
     text-align: center;
 }
 
+/**/
+#leaderboard {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+}
 
 
 #gameArea {
@@ -111,7 +122,6 @@ body {
     background-color: lightblue;
     display: none;
 }
-
 
 #scoreArea {
     position: absolute;
