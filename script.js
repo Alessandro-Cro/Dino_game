@@ -400,8 +400,20 @@ function updateLeaderboard() {
             scores.sort((a, b) => b.score - a.score);
             const topScores = scores.slice(0, 3);
 
-            leaderboard.innerHTML = "<h2>🏆 Classifica Top 3 🏆</h2>";
+            leaderboard.innerHTML = "<h2>🏆 Classifica 🏆</h2>";
             topScores.forEach((entry, index) => {
+                let medal = '';
+                switch (index) {
+                    case 0:
+                        medal = '🥇';
+                        break;
+                    case 1:
+                        medal = '🥈';
+                        break;
+                    case 2:
+                        medal = '🥉';
+                        break;
+                }
                 leaderboard.innerHTML += `<p>${index + 1}. ${entry.name} - ${entry.score} punti</p>`;
             });
         } else {
