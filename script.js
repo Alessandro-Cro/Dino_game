@@ -199,7 +199,7 @@ function showGameOverScreen() {
 
     document.getElementById('gameOverScreen').style.display = 'block';
 
-    if (playerName.toLowerCase() === "lara") {
+    if (playerName.toLowerCase() === " ") {
         // Sequenza speciale per "Lara"
         gameOverText.textContent = "Beccati questo";
         gameOverImage.style.display = 'none';
