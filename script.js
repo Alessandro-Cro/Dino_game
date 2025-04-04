@@ -174,81 +174,6 @@ function enterFullscreen() {
 }
 document.getElementById("fullscreenButton").addEventListener("click", enterFullscreen);
 
-
-
-
-/*function showGameOverScreen() {
-    const gameOverText = document.getElementById('gameOverText');
-    const gameOverImage = document.getElementById('gameOverImage');
-    const restartButton = document.getElementById('restartGame');
-
-    // Mostra il contenitore del Game Over
-    document.getElementById('gameOverScreen').style.display = 'block';
-
-    // Reset scritta e immagine
-    gameOverText.textContent = "Beccati questo";
-    gameOverImage.style.display = 'none';
-    restartButton.style.display = 'none';
-
-    // Aggiungi i puntini di sospensione
-    let dots = "";
-    let dotInterval = setInterval(() => {
-        if (dots.length < 3) {
-            dots += ".";
-        } else {
-            clearInterval(dotInterval);
-
-            // Mostra l'immagine "circle"
-            setTimeout(() => {
-                gameOverImage.style.display = 'block';
-
-                // Mostra il pulsante "OK" dopo 1 secondo
-                setTimeout(() => {
-                    restartButton.style.display = 'block';
-                }, 1000);
-            }, 1000);
-        }
-        gameOverText.textContent = `Beccati questo${dots}`;
-    }, 500);
-}*/
-/*function showGameOverScreen() {
-    const gameOverText = document.getElementById('gameOverText');
-    const gameOverImage = document.getElementById('gameOverImage');
-    const restartButton = document.getElementById('restartGame');
-
-    // Mostra il contenitore del Game Over
-    document.getElementById('gameOverScreen').style.display = 'block';
-
-    // Mostra "Game Over" per 1.5 secondi
-    gameOverText.textContent = "Game Over";
-    gameOverImage.style.display = 'none';
-    restartButton.style.display = 'none';
-
-    setTimeout(() => {
-        // Cambia il testo in "Beccati questo"
-        gameOverText.textContent = "Beccati questo";
-        let dots = "";
-        let dotInterval = setInterval(() => {
-            if (dots.length < 3) {
-                dots += ".";
-            } else {
-                clearInterval(dotInterval);
-
-                // Mostra l'immagine "circle"
-                setTimeout(() => {
-                    gameOverImage.style.display = 'block';
-
-                    // Mostra il pulsante "Restart" dopo 1 secondo
-                    setTimeout(() => {
-                        restartButton.style.display = 'block';
-                    }, 1000);
-                }, 1000);
-            }
-            gameOverText.textContent = `Beccati questo${dots}`;
-        }, 500);
-    }, 1500); // Mostra "Game Over" per 1.5 secondi prima di "Beccati questo..."
-} */ //funzione originale
-
 function showGameOverScreen() {
     const gameOverText = document.getElementById('gameOverText');
     const gameOverImage = document.getElementById('gameOverImage');
@@ -419,3 +344,83 @@ startButton.addEventListener('click', startGame);
 document.getElementById('restartGame').addEventListener('click', () => {
     resetGame(); // Reset del gioco
 });
+
+
+
+//
+// Import Firebase
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+import { getDatabase, ref, set, get, child, update } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyB4hmY1DIjID2DuYyiXTFZDUP3dNIU8V1s",
+    authDomain: "dino-8148f.firebaseapp.com",
+    databaseURL: "https://dino-8148f-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "dino-8148f",
+    storageBucket: "dino-8148f.appspot.com",
+    messagingSenderId: "250616453153",
+    appId: "1:250616453153:web:bbf29808a8b869a0a9eb60",
+    measurementId: "G-PW9C89WJ74"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// Elementi della classifica
+const leaderboard = document.getElementById("leaderboard");
+const playerNameInput = document.getElementById("playerName");
+let playerName = "";
+
+// Funzione per aggiornare la classifica
+function updateLeaderboard() {
+    const leaderboardRef = ref(db, "leaderboard");
+    get(leaderboardRef).then((snapshot) => {
+        if (snapshot.exists()) {
+            const scores = Object.entries(snapshot.val()).map(([name, score]) => ({ name, score }));
+            scores.sort((a, b) => b.score - a.score);
+            const topScores = scores.slice(0, 3);
+
+            leaderboard.innerHTML = "<h2>🏆 Classifica Top 3 🏆</h2>";
+            topScores.forEach((entry, index) => {
+                leaderboard.innerHTML += `<p>${index + 1}. ${entry.name} - ${entry.score} punti</p>`;
+            });
+        } else {
+            leaderboard.innerHTML = "<p>Nessun punteggio registrato</p>";
+        }
+    });
+}
+
+
+
+// Funzione per salvare il punteggio
+function saveScore(score) {
+    if (playerName.trim() === "") return;
+
+    const playerRef = ref(db, "leaderboard/" + playerName);
+    get(playerRef).then((snapshot) => {
+        if (snapshot.exists()) {
+            const bestScore = snapshot.val();
+            if (score > bestScore) {
+                update(playerRef, score);
+            }
+        } else {
+            set(playerRef, score);
+        }
+        updateLeaderboard();
+    });
+}
+
+// Gestire l'inserimento del nome
+document.getElementById("startButton").addEventListener("click", () => {
+    playerName = playerNameInput.value.trim();
+    if (!playerName) {
+        alert("Inserisci un nome per giocare!");
+        return;
+    }
+    startGame();
+});
+
+
+
+updateLeaderboard(); // Carica la classifica inizialmente
