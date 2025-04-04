@@ -289,6 +289,7 @@ function loseLife() {
         document.getElementById('lifeLostMessage').style.display = 'block';
     } else {
         clearInterval(gameInterval); // Ferma il gioco
+        saveScore(score);
         showGameOverScreen(); // Mostra la sequenza di Game Over
     }
 }
@@ -402,7 +403,7 @@ function saveScore(score) {
         if (snapshot.exists()) {
             const bestScore = snapshot.val();
             if (score > bestScore) {
-                update(playerRef, score);
+                set(playerRef, score);
             }
         } else {
             set(playerRef, score);
