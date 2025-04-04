@@ -6,6 +6,7 @@ const jumpButton = document.getElementById('jumpButton');
 const livesContainer = document.getElementById('livesContainer');
 const scoreDisplay = document.getElementById('score');
 
+
 let isJumping = false;
 let isHoldingJump = false;
 let score = 0;
@@ -16,10 +17,15 @@ let cactusCount = 0;
 let consecutiveJumps = 0; // Nuova variabile per tracciare i salti consecutivi
 let gameActive = false;
 let playerName = ""; // Variabile per memorizzare il nome
+let cactusTimeoutId = null;
 
 // Funzione per iniziare il gioco
 function startGame() {
     playerName = document.getElementById("playerName").value.trim();
+
+    // Evita di avviare il gioco se è già attivo
+    if (gameActive) return;
+    
     resetLives();
     resetScore();
     cactusCount = 0;
@@ -28,9 +34,20 @@ function startGame() {
     jumpButton.style.display = 'block';
     gameActive = true;
 
+    // Cancella cactus precedenti
+    if (cactusTimeoutId) {
+        clearTimeout(cactusTimeoutId);
+    }
+
+    // Inizia a generare cactus dopo 1s
+    cactusTimeoutId = setTimeout(() => {
+        generateCactus();
+    }, 1500);
+
+    /*
     setTimeout(() => {
         generateCactus(); // Genera il primo cactus
-    }, 1000); // Ritardo iniziale
+    }, 1000); // Ritardo iniziale*/
 }
 
 let dinoFrame = 4; // Inizia dal 4° frame (indice 3 perché parte da 0)
@@ -125,7 +142,8 @@ function generateCactus() {
 
     // Genera il prossimo cactus dopo un intervallo casuale
     const nextCactusTime = Math.random() * (2000 - 1000) + 800; // Da 1 a 2 secondi
-    setTimeout(generateCactus, nextCactusTime);
+    cactusTimeoutId = setTimeout(generateCactus, nextCactusTime);
+    //setTimeout(generateCactus, nextCactusTime);
 }
 
 // Funzione per muovere il cactus
