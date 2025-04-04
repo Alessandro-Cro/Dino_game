@@ -370,7 +370,7 @@ const db = getDatabase(app);
 // Elementi della classifica
 const leaderboard = document.getElementById("leaderboard");
 const playerNameInput = document.getElementById("playerName");
-let playerName = "";
+//let playerName = "";
 
 // Funzione per aggiornare la classifica
 function updateLeaderboard() {
